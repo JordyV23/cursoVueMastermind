@@ -7,7 +7,7 @@
   <main class="container">
     <section>
       <form class="add-todo-form" action="">
-        <input v-model="todoTitle" type="text" placeholder="Todo Tittle"/>
+        <input v-model="todoTitle" type="text" placeholder="Todo Tittle" />
         <div>
           <button @click.prevent="addTodo">Add ToDo</button>
         </div>
@@ -15,8 +15,8 @@
     </section>
 
     <section>
-      <div v-for="(todo, i) in todos" class="todo">
-        <p>{{ todo }}</p>
+      <div v-for="(todo, i) in todos" class="todo" :key="todo.id">
+        <p>{{ todo.title }}</p>
         <div>
           <button class="remove-todo-btn" @click="removeTodo(i)">&times;</button>
         </div>
@@ -29,21 +29,24 @@
 <script>
 
 export default {
-  data(){
+  data() {
     return {
-      todoTitle:"",
+      todoTitle: "",
       todos: [],
     }
   },
 
   methods: {
-    addTodo(){
-      this.todos.push(this.todoTitle);
+    addTodo() {
+      this.todos.push({
+        title: this.todoTitle,
+        id: Math.floor(Math.random() * 1000)
+      });
       this.todoTitle = "";
     },
 
-    removeTodo(id){
-      this.todos.splice(id,1);
+    removeTodo(id) {
+      this.todos.splice(id, 1);
     }
   }
 }
@@ -59,28 +62,28 @@ export default {
   margin-bottom: 30px;
 }
 
-.brand{
+.brand {
   font-size: 2rem;
 }
 
-.add-todo-form{
+.add-todo-form {
   display: flex;
   justify-content: space-between;
 }
 
-.add-todo-form input{
+.add-todo-form input {
   width: 80%;
   border: solid 2px var(--accent-color);
 }
 
-.add-todo-form button{
+.add-todo-form button {
   background: var(--accent-color);
   color: var(--text-color);
   border: none;
   height: 50px;
 }
 
-.todo{
+.todo {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -90,7 +93,7 @@ export default {
   border-radius: 10px;
 }
 
-.remove-todo-btn{
+.remove-todo-btn {
   border-radius: 50%;
   border: none;
   height: 40px;

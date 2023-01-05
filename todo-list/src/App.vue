@@ -2,7 +2,7 @@
   <Navbar />
 
   <main class="container">
-    <Modal :show="editTodoForm.show">
+    <Modal :show="editTodoForm.show" @close="editTodoForm.show = false">
       <template #header> <h2>Edit Todo</h2></template>
       <template #content>
         <form class="edit-todo-form">
@@ -101,7 +101,6 @@ export default {
     },
 
     removeTodo(id) {
-      console.log(id);
       this.todos = this.todos.filter((todo) => todo.id !== id);
     },
   },

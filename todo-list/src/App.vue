@@ -3,29 +3,31 @@
 
   <main class="container">
     <Modal :show="editTodoForm.show" @close="editTodoForm.show = false">
-      <template #header> <h2>Edit Todo</h2></template>
+      <template #header>
+        <h2>Edit Todo</h2>
+      </template>
+
       <template #content>
         <form class="edit-todo-form">
-          <div>
-            <label>Todo Title</label>
-          </div>
+          <div><label>Todo Title</label></div>
           <input type="text" v-model="editTodoForm.todo.title" />
         </form>
       </template>
+
       <template #footer>
         <div class="edit-todo-modal-footer">
           <Btn class="edit-todo-submit-btn" @click="updateTodo">Submit</Btn>
-          <Btn type="danger" @click="editTodoForm.show = false">Close</Btn>
+          <Btn variant="danger" @click="editTodoForm.show = false">Close</Btn>
         </div>
       </template>
     </Modal>
 
     <Alert
-      message="Todo title is required."
+      message="Todo title is required"
       :show="showAlert"
       @close="showAlert = false"
-      type="danger"
     />
+
     <section>
       <AddTodoForm @submit="addTodo" />
     </section>
@@ -33,8 +35,8 @@
     <section>
       <Todo
         v-for="todo in todos"
-        :titulo="todo.title"
         :key="todo.id"
+        :title="todo.title"
         @remove="removeTodo(todo.id)"
         @edit="showEditTodoForm(todo)"
       />
@@ -43,12 +45,13 @@
 </template>
 
 <script>
-import AddTodoForm from "./components/AddTodoForm.vue";
 import Alert from "./components/Alert.vue";
-import Modal from "./components/Modal.vue";
 import Navbar from "./components/Navbar.vue";
+import AddTodoForm from "./components/AddTodoForm.vue";
 import Todo from "./components/Todo.vue";
+import Modal from "./components/Modal.vue";
 import Btn from "./components/Btn.vue";
+
 export default {
   components: {
     Alert,
@@ -81,10 +84,9 @@ export default {
         return;
       }
       this.todos.push({
-        title: title,
+        title,
         id: Math.floor(Math.random() * 1000),
       });
-      this.todoTitle = "";
     },
 
     showEditTodoForm(todo) {

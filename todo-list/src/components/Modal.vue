@@ -24,41 +24,38 @@ export default {
     },
   },
 
-  data(){
+  data() {
     return {
       clickListener: (e) => {
-      if(e.target === this.$refs.modal){
-        this.$emit('close');
-      }
-    },
+        if (e.target === this.$refs.modal) {
+          this.$emit("close");
+        }
+      },
 
-    closeOnEscapeListener : (e) => {
-      if(e.key === "Escape"){
-        this.$emit('close');
+      closeOnEscapeListener: (e) => {
+        if (e.key === "Escape") {
+          this.$emit('close');
+        }
       }
-    }
-    }
+    };
   },
 
   emits: ["close"],
 
   mounted() {
-    window.addEventListener("click",this.clickListener)
-    window.addEventListener("keydown",this.closeOnEscapeListener)
+    window.addEventListener("click", this.clickListener);
+    window.addEventListener("keydown", this.closeOnEscapeListener);
   },
 
-  beforeUnmount(){
-    window.removeEventListener("click", this.clickListener)
-    window.removeEventListener("keydown",this.closeOnEscapeListener)
-  }
+  beforeUnmount() {
+    window.removeEventListener("click", this.clickListener);
+    window.removeEventListener("keydown", this.closeOnEscapeListener);
+  },
 };
 </script>
 
 <style scoped>
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
+/* The Modal (background) */
 .modal {
   position: fixed;
   z-index: 1;
@@ -68,10 +65,10 @@ body {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.4);
 }
 
+/* Modal Content */
 .modal-content {
   position: relative;
   background-color: #fefefe;
@@ -85,6 +82,7 @@ body {
   animation-duration: 0.4s;
 }
 
+/* Add Animation */
 @-webkit-keyframes animatetop {
   from {
     top: -300px;
@@ -109,7 +107,7 @@ body {
 
 .modal-header {
   padding: 2px 16px;
-  background-color: rgb(83, 83, 90);
+  background-color: rgb(83, 83, 93);
   color: white;
 }
 
@@ -120,7 +118,7 @@ body {
 
 .modal-footer {
   padding: 2px 16px;
-  background-color: rgb(83, 83, 90);
+  background-color: rgb(83, 83, 93);
   color: white;
 }
 </style>

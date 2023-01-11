@@ -1,15 +1,16 @@
 <template>
-  <form class="add-todo-form" action="">
-    <input v-model="todoTitle" type="text" placeholder="Todo Tittle" />
+  <form class="add-todo-form">
+    <input v-model="todoTitle" type="text" placeholder="Todo Title" />
     <div>
-      <Btn class="btn" @click="$emit('submit', todoTitle)">Add ToDo</Btn>
+      <Btn type="submit" class="btn" @click.prevent="$emit('submit', todoTitle)">
+        Add Todo
+      </Btn>
     </div>
   </form>
 </template>
 
 <script>
 import Btn from "./Btn.vue";
-
 export default {
   components: { Btn },
   data() {
@@ -21,7 +22,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .add-todo-form {
   display: flex;
   justify-content: space-between;
@@ -32,7 +33,7 @@ export default {
   border: solid 2px var(--accent-color);
 }
 
-.btn{
+.btn {
   height: 50px;
 }
 </style>

@@ -30,17 +30,20 @@
     />
 
     <section>
-      <AddTodoForm @submit="addTodo" />
+      <AddTodoForm :isLoading="isPostingTodo" @submit="addTodo" />
     </section>
 
     <section>
-      <Todo
-        v-for="todo in todos"
-        :key="todo.id"
-        :title="todo.title"
-        @remove="removeTodo(todo.id)"
-        @edit="showEditTodoForm(todo)"
-      />
+      <Spinner v-if="isLoading" />
+      <div v-else>
+        <Todo
+          v-for="todo in todos"
+          :key="todo.id"
+          :title="todo.title"
+          @remove="removeTodo(todo.id)"
+          @edit="showEditTodoForm(todo)"
+        />
+      </div>
     </section>
   </main>
 </template>
@@ -52,6 +55,7 @@ import AddTodoForm from "./components/AddTodoForm.vue";
 import Todo from "./components/Todo.vue";
 import Modal from "./components/Modal.vue";
 import Btn from "./components/Btn.vue";
+import Spinner from "./components/Spinner.vue";
 import axios from "axios";
 
 export default {
@@ -62,6 +66,7 @@ export default {
     Todo,
     Modal,
     Btn,
+    Spinner,
   },
 
   data() {
@@ -73,6 +78,8 @@ export default {
         message: "",
         type: "danger",
       },
+      isLoading: false,
+      isPostingTodo: false,
       editTodoForm: {
         show: false,
         todo: {
@@ -89,29 +96,31 @@ export default {
 
   methods: {
     async fetchTodos() {
+      this.isLoading = true;
       try {
         const res = await axios.get("http://localhost:8080/todos");
         this.todos = res.data;
       } catch (e) {
-        this.showAlert("Failed loading todos, check your internet connection")
+        this.showAlert("Failed loading todos");
       }
+      this.isLoading = false;
     },
 
     showAlert(message, type = "danger") {
       this.alert.show = true;
       this.alert.message = message;
-      this.alert.type = type; 
+      this.alert.type = type;
     },
 
     async addTodo(title) {
       if (title === "") {
-        this.showAlert("Todo title is required")
+        this.showAlert("Todo title is required");
         return;
       }
-
+      this.isPostingTodo = true;
       const res = await axios.post("http://localhost:8080/todos", { title });
-
-      console.log(res);
+      this.isPostingTodo = false;
+      this.title=""
       this.todos.push(res.data);
     },
 
@@ -137,6 +146,11 @@ export default {
 </script>
 
 <style scoped>
+.spinner {
+  margin: auto;
+  margin-top: 30px;
+}
+
 .edit-todo-form > input {
   width: 100%;
   height: 30px;

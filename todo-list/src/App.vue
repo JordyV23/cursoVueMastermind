@@ -2,25 +2,12 @@
   <Navbar />
 
   <main class="container">
-    <Modal :show="editTodoForm.show" @close="editTodoForm.show = false">
-      <template #header>
-        <h2>Edit Todo</h2>
-      </template>
-
-      <template #content>
-        <form class="edit-todo-form">
-          <div><label>Todo Title</label></div>
-          <input type="text" v-model="editTodoForm.todo.title" />
-        </form>
-      </template>
-
-      <template #footer>
-        <div class="edit-todo-modal-footer">
-          <Btn class="edit-todo-submit-btn" @click="updateTodo">Submit</Btn>
-          <Btn variant="danger" @click="editTodoForm.show = false">Close</Btn>
-        </div>
-      </template>
-    </Modal>
+    <EditTodoForm
+      :show="editTodoForm.show"
+      @close="editTodoForm.show = false"
+      @submit="updateTodo"
+      v-model="editTodoForm.todo.title"
+    />
 
     <Alert
       :message="alert.message"
@@ -57,6 +44,7 @@ import Modal from "./components/Modal.vue";
 import Btn from "./components/Btn.vue";
 import Spinner from "./components/Spinner.vue";
 import axios from "axios";
+import EditTodoForm from "./components/EditTodoForm.vue";
 
 export default {
   components: {
@@ -67,6 +55,7 @@ export default {
     Modal,
     Btn,
     Spinner,
+    EditTodoForm,
   },
 
   data() {
@@ -120,7 +109,6 @@ export default {
       this.isPostingTodo = true;
       const res = await axios.post("/api/todos", { title });
       this.isPostingTodo = false;
-      this.title=""
       this.todos.push(res.data);
     },
 
@@ -133,8 +121,11 @@ export default {
       const todo = this.todos.find(
         (todo) => todo.id === this.editTodoForm.todo.id
       );
-      todo.title = this.editTodoForm.todo.title;
+      axios.patch(`/api/todos/${todo.id}`, {
+        title: this.editTodoForm.todo.title,
+      });
       this.editTodoForm.show = false;
+      this.fetchTodos();
     },
 
     async removeTodo(id) {
@@ -145,25 +136,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .spinner {
   margin: auto;
   margin-top: 30px;
-}
-
-.edit-todo-form > input {
-  width: 100%;
-  height: 30px;
-  border: 1px solid var(--accent-color);
-}
-
-.edit-todo-modal-footer {
-  display: flex;
-  justify-content: end;
-  padding: 10px;
-}
-
-.edit-todo-submit-btn {
-  margin-right: 5px;
 }
 </style>

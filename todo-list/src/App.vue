@@ -35,7 +35,7 @@
   </main>
 </template>
 
-<script>
+<script setup>
 import Alert from "./components/Alert.vue";
 import Navbar from "./components/Navbar.vue";
 import AddTodoForm from "./components/AddTodoForm.vue";
@@ -45,95 +45,74 @@ import Btn from "./components/Btn.vue";
 import Spinner from "./components/Spinner.vue";
 import axios from "axios";
 import EditTodoForm from "./components/EditTodoForm.vue";
+import { reactive, ref } from "vue";
 
-export default {
-  components: {
-    Alert,
-    Navbar,
-    AddTodoForm,
-    Todo,
-    Modal,
-    Btn,
-    Spinner,
-    EditTodoForm,
+const todos = ref([]);
+const alert = reactive({
+  show: false,
+  message: "",
+  variant: "danger",
+});
+const isLoading = ref(false);
+const isPostingTodo = ref(false);
+const editTodoForm = reactive({
+  show: false,
+  todo: {
+    id: 0,
+    title: "",
   },
+});
 
-  data() {
-    return {
-      todoTitle: "",
-      todos: [],
-      alert: {
-        show: false,
-        message: "",
-        variant: "danger",
-      },
-      isLoading: false,
-      isPostingTodo: false,
-      editTodoForm: {
-        show: false,
-        todo: {
-          id: 0,
-          title: "",
-        },
-      },
-    };
-  },
+fetchTodos();
 
-  created() {
-    this.fetchTodos();
-  },
+function showAlert(message, variant = "danger") {
+  alert.show = true;
+  alert.message = message;
+  alert.variant = variant;
+}
 
-  methods: {
-    async fetchTodos() {
-      this.isLoading = true;
-      try {
-        const res = await axios.get("/api/todos");
-        this.todos = res.data;
-      } catch (e) {
-        this.showAlert("Failed loading todos");
-      }
-      this.isLoading = false;
-    },
+function showEditTodoForm(todo) {
+  editTodoForm.show = true;
+  editTodoForm.todo = { ...todo };
+}
 
-    showAlert(message, variant = "danger") {
-      this.alert.show = true;
-      this.alert.message = message;
-      this.alert.variant = variant;
-    },
+async function fetchTodos() {
+  isLoading.value = true;
+  try {
+    const res = await axios.get("/api/todos");
+    console.log(res);
+    todos.value = res.data;
+  } catch (e) {
+    showAlert("Failed loading todos");
+  }
+  isLoading.value = false;
+}
 
-    async addTodo(title) {
-      if (title === "") {
-        this.showAlert("Todo title is required");
-        return;
-      }
-      this.isPostingTodo = true;
-      const res = await axios.post("/api/todos", { title });
-      this.isPostingTodo = false;
-      this.todos.push(res.data);
-    },
+function updateTodo() {
+  const todo = todos.value.find((todo) => todo.id === editTodoForm.todo.id);
+  axios.patch(`/api/todos/${todo.id}`, {
+    title: editTodoForm.todo.title,
+  });
+  editTodoForm.show = false;
+  fetchTodos();
+}
 
-    showEditTodoForm(todo) {
-      this.editTodoForm.show = true;
-      this.editTodoForm.todo = { ...todo };
-    },
+async function addTodo(title) {
+  if (title === "") {
+    showAlert("Todo title is required");
+    return;
+  }
+  isPostingTodo.value = true;
+  const res = await axios.post("/api/todos", { title });
+  isPostingTodo.value = false;
+  todos.value.push(res.data);
+}
 
-    updateTodo() {
-      const todo = this.todos.find(
-        (todo) => todo.id === this.editTodoForm.todo.id
-      );
-      axios.patch(`/api/todos/${todo.id}`, {
-        title: this.editTodoForm.todo.title,
-      });
-      this.editTodoForm.show = false;
-      this.fetchTodos();
-    },
+async function removeTodo(id) {
+  await axios.delete(`/api/todos/${id}`);
+  todos.value = todos.value.filter((todo) => todo.id !== id);
+}
 
-    async removeTodo(id) {
-      await axios.delete(`/api/todos/${id}`);
-      this.todos = this.todos.filter((todo) => todo.id !== id);
-    },
-  },
-};
 </script>
 
 <style>

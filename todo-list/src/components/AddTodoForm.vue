@@ -3,36 +3,33 @@
     <input v-model="todoTitle" type="text" placeholder="Todo Title" />
     <div>
       <Btn
-        :disabled="isLoading"
+        :disabled="false"
         type="submit"
         class="btn"
         @click.prevent="$emit('submit', todoTitle)"
       >
-        <Spinner v-if="isLoading" />
+        <Spinner v-if="false" />
         <span v-else>Add Todo</span>
       </Btn>
     </div>
   </form>
 </template>
 
-<script>
+<script setup>
+import { ref } from "vue";
 import Btn from "./Btn.vue";
 import Spinner from "./Spinner.vue";
-export default {
-  components: { Btn, Spinner },
-  props: {
-    isLoading: {
-      default: false,
-      type: Boolean,
-    },
+
+const todoTitle = ref("");
+defineProps({
+  isLoading: {
+    default: false,
+    type: Boolean,
   },
-  data() {
-    return {
-      todoTitle: "",
-    };
-  },
-  emits: ["submit"],
-};
+});
+
+defineEmits(["submit"]);
+
 </script>
 
 <style scoped>

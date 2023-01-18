@@ -7,9 +7,13 @@
     <template #content>
       <form class="edit-todo-form">
         <div>
-            <label>Todo Title</label>
+          <label>Todo Title</label>
         </div>
-        <input type="text" :value="modelValue" @input="$emit('update:modelValue',$event.target.value)" />
+        <input
+          type="text"
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event.target.value)"
+        />
       </form>
     </template>
 
@@ -22,20 +26,12 @@
   </Modal>
 </template>
 
-<script>
+<script setup>
 import Modal from "./Modal.vue";
 import Btn from "./Btn.vue";
 
-export default {
-  components: {
-    Modal,
-    Btn,
-  },
-
-  props: ["modelValue","show"],
-
-  emits: ['close','submit','update:modelValue']
-};
+defineProps(["modelValue", "show"]);
+defineEmits(["close", "submit", "update:modelValue"]);
 </script>
 
 <style scoped>

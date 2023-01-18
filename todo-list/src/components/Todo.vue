@@ -17,20 +17,18 @@
   </div>
 </template>
 
-<script>
+<script setup>
+
 import Btn from "./Btn.vue";
 import Pencil from "./icons/Pencil.vue";
 
-export default {
-  components: { Btn, Pencil },
-  props: {
+const props = defineProps( {
     title: {
       required: true,
       type: String,
     },
-  },
-  emits: ["remove", "edit"],
-};
+  });
+
 </script>
 
 <style scoped>

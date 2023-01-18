@@ -40,8 +40,6 @@ import Alert from "./components/Alert.vue";
 import Navbar from "./components/Navbar.vue";
 import AddTodoForm from "./components/AddTodoForm.vue";
 import Todo from "./components/Todo.vue";
-import Modal from "./components/Modal.vue";
-import Btn from "./components/Btn.vue";
 import Spinner from "./components/Spinner.vue";
 import axios from "axios";
 import EditTodoForm from "./components/EditTodoForm.vue";

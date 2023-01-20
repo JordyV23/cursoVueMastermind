@@ -1,11 +1,4 @@
 <template>
-  <EditTodoForm
-    :show="editTodoForm.show"
-    @close="editTodoForm.show = false"
-    @submit="updateTodo"
-    v-model="editTodoForm.todo.title"
-  />
-
   <Alert
     :message="alert.message"
     :show="alert.show"
@@ -25,7 +18,7 @@
         :key="todo.id"
         :title="todo.title"
         @remove="removeTodo(todo.id)"
-        @edit="showEditTodoForm(todo)"
+        @edit="$router.push(`/todos/${todo.id}/edit`)"
       />
     </div>
   </section>
@@ -37,7 +30,6 @@ import AddTodoForm from "@/components/AddTodoForm.vue";
 import Todo from "@/components/Todo.vue";
 import Spinner from "@/components/Spinner.vue";
 import axios from "axios";
-import EditTodoForm from "@/components/EditTodoForm.vue";
 import { reactive, ref, watch } from "vue";
 import { useFetch } from "@/composables/fetch";
 
@@ -62,20 +54,6 @@ function showAlert(message, variant = "danger") {
   alert.show = true;
   alert.message = message;
   alert.variant = variant;
-}
-
-function showEditTodoForm(todo) {
-  editTodoForm.show = true;
-  editTodoForm.todo = { ...todo };
-}
-
-function updateTodo() {
-  const todo = todos.value.find((todo) => todo.id === editTodoForm.todo.id);
-  axios.patch(`/api/todos/${todo.id}`, {
-    title: editTodoForm.todo.title,
-  });
-  editTodoForm.show = false;
-  fetchTodos();
 }
 
 async function addTodo(title) {
